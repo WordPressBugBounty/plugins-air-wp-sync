@@ -144,4 +144,25 @@ class Air_WP_Sync_Helper {
 			return $carry;
 		}, [] );
 	}
+
+	/**
+	 * Recursively flatten a given array into a one dimensional array
+	 * 
+	 * @param  array  $arr  The initial array.
+	 * @return  array  $arr  Flattened array.
+	 */
+	public static function array_flatten( $arr ){
+		if( ! is_array( $arr ) ){
+			$arr = (array) $arr;
+		}
+		$arr = array_reduce( $arr, function( $carry, $item ){
+			if ( is_array( $item ) ) {
+				$carry = array_merge( $carry, self::array_flatten( $item ) );
+			} else {
+				$carry[] = $item;
+			}
+			return $carry;
+		}, [] );
+		return $arr;
+	}
 }

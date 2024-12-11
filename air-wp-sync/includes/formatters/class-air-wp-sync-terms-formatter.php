@@ -11,19 +11,28 @@ class Air_WP_Sync_Terms_Formatter {
 
 	/**
 	 * Format source value
+	 *
+	 * @param array|string|null             $value The list of string.
+	 * @param Air_WP_Sync_Abstract_Importer $importer The importer.
+	 * @param string                        $taxonomy The taxonomy.
+	 * @param bool                          $split_comma_separated_string_into_terms  Whether to split the strngs on the commas to create terms.
+	 *
+	 * @return array
 	 */
-	public function format( $value, $importer, $taxonomy ) {
+	public function format( $value, $importer, $taxonomy, $split_comma_separated_string_into_terms ) {
 		$this->importer = $importer;
 
 		if ( is_null( $value ) ) {
 			return array();
 		}
 
-		// If the incoming value is a comma-seperated list of values, split the string.
-		$value = is_string( $value ) ? array_map( 'trim', explode( ',', $value ) ) : $value;
-
 		// Make sure we have an array of terms
 		$values = ! is_array( $value ) ? array( $value ) : $value;
+
+		// Go through the array and split strings if needed.
+		if ( $split_comma_separated_string_into_terms ) {
+			$values = array_reduce( $values, array( $this, 'recursive_split' ) , [] );
+		}
 
 		$terms = array();
 		foreach ( $values as $value ) {
@@ -53,5 +62,22 @@ class Air_WP_Sync_Terms_Formatter {
 		if ( $this->importer ) {
 			$this->importer->log( $message, $level );
 		}
+	}
+
+	/**
+	 * Callback function used to recursively merge array, and split strings by commas
+	 * 
+	 * @param  array  $carry  Array of values from the preceding iteration.
+	 * @param  array|string  $item  Current item.
+	 * @return  array  $carry  Array of values after the current iteration.  
+	 */
+	function recursive_split( $carry, $item ){
+		if( is_string( $item )){
+			$carry = array_merge( $carry, array_map( 'trim', explode( ',', $item ) ) );
+		}
+		if( is_array( $item ) ){
+			$carry = array_merge( $carry, $this->recursive_split( $carry, $item ) );
+		}
+		return $carry;
 	}
 }

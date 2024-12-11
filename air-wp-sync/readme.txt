@@ -4,9 +4,9 @@ Author URI: https://wpconnect.co/
 Contributors: wpconnectco, thomascharbit, vincentdubroeucq
 Tags: airtable, integration, api, automation, synchronization
 Requires at least: 5.7
-Tested up to: 6.6
+Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 2.5.0
+Stable tag: 2.6.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,13 +15,13 @@ Swiftly sync Airtable to your WordPress website!
 == Description == 
 
 By connecting your Airtable database platform to your WordPress website, this plugin helps you manage your content better. Identify the Airtable fields you wish to link to WordPress and choose the format for your imported contents: articles, pages, products, etc. Simply define your ideal update frequency. Your plugin will automatically sync everything swiftly!
-Upgrade to Pro Version ([here](https://wpconnect.co/air-wp-sync-plugin/)) to unleash advanced features.
+Upgrade to Pro Version ([here](https://wpconnect.co/air-wp-sync-plugin/?utm_source=wordpress.org&utm_medium=referral&utm_campaign=awps-free)) to unleash advanced features.
 
 == Features == 
 
 = Create connections to your Airtable tables =
 * Set up as many connections as you want
-* Publish an unlimited number of connections (Pro Version)
+* Publish an unlimited number of connections ([Pro Version](https://wpconnect.co/air-wp-sync-plugin/?utm_source=wordpress.org&utm_medium=referral&utm_campaign=awps-free))
 
 = Choose the content format you want to import =
 * Import your contents in your preferred format: articles, pages, etc.
@@ -29,12 +29,17 @@ Upgrade to Pro Version ([here](https://wpconnect.co/air-wp-sync-plugin/)) to unl
 
 = Sync your personalized data =
 * Create new custom fields (Pro Version)
-* Use specific content formats "Custom Post Types" (Pro Version)
+* Use specific content formats "Custom Post Types" ([Pro Version](https://wpconnect.co/air-wp-sync-plugin/?utm_source=wordpress.org&utm_medium=referral&utm_campaign=awps-free))
 
 = Define synchronization setups =
 * Sync your data manually or automatically
-* Select update frequency (Pro Version)
+* Select update frequency ([Pro Version](https://wpconnect.co/air-wp-sync-plugin/?utm_source=wordpress.org&utm_medium=referral&utm_campaign=awps-free))
 * Set up synchronization method (add, update, delete)
+
+= Third-party plugins Support =
+([Pro+ Version](https://wpconnect.co/air-wp-sync-plugin/?utm_source=wordpress.org&utm_medium=referral&utm_campaign=awps-free))
+* ACF (Advanced Custom Fields) & Jet Engine CPT
+* SEO plugins (AllInOne, Rank Math, SEOPress, Yoast) 
 
 
 == Installation ==
@@ -100,6 +105,12 @@ If you need some assistance, open a ticket on the [Support](https://wordpress.or
 
 
 == Changelog ==
+
+= 2.6.0 =
+Compatibility with WordPress 6.7
+Feature: Added checkbox to allow comma-seperated lists of taxonomy terms.
+Feature: Added support for Multiple Link to Another Record in Taxonomy field.
+Improvement: Minor code cleanup.
 
 = 2.5.0 =
 Fix: Added support for singleSelect and multipleSelect fields returned by formula fields. 

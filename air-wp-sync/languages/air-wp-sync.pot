@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later License.
 msgid ""
 msgstr ""
-"Project-Id-Version: Air WP Sync - Airtable to WordPress 2.5.0\n"
+"Project-Id-Version: Air WP Sync - Airtable to WordPress 2.6.0\n"
 "Report-Msgid-Bugs-To: https://wpconnect.freshdesk.com/\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-09-09T09:04:41+00:00\n"
+"POT-Creation-Date: 2024-12-09T09:16:50+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: air-wp-sync\n"
@@ -261,7 +261,7 @@ msgstr ""
 
 #: includes/class-air-wp-sync-filters.php:95
 #: includes/sources/class-air-wp-sync-collaborator-source.php:39
-#: modules/term/destinations/class-air-wp-sync-term-destination.php:240
+#: modules/term/destinations/class-air-wp-sync-term-destination.php:239
 msgid "Name"
 msgstr ""
 
@@ -367,7 +367,7 @@ msgid "Excerpt"
 msgstr ""
 
 #: modules/post/destinations/class-air-wp-sync-post-destination.php:154
-#: modules/term/destinations/class-air-wp-sync-term-destination.php:246
+#: modules/term/destinations/class-air-wp-sync-term-destination.php:245
 msgid "Slug"
 msgstr ""
 
@@ -399,6 +399,10 @@ msgstr ""
 msgid "Taxonomies"
 msgstr ""
 
+#: modules/post/destinations/class-air-wp-sync-taxonomy-destination.php:94
+msgid "Split comma-separated string into terms"
+msgstr ""
+
 #: modules/post/views/settings.php:12
 msgid "Post Type"
 msgstr ""
@@ -419,23 +423,23 @@ msgstr ""
 msgid "It is mandatory to map the term name."
 msgstr ""
 
-#: modules/term/destinations/class-air-wp-sync-term-destination.php:226
+#: modules/term/destinations/class-air-wp-sync-term-destination.php:225
 msgid "Terms"
 msgstr ""
 
-#: modules/term/destinations/class-air-wp-sync-term-destination.php:252
+#: modules/term/destinations/class-air-wp-sync-term-destination.php:251
 msgid "Taxonomy"
 msgstr ""
 
-#: modules/term/destinations/class-air-wp-sync-term-destination.php:258
+#: modules/term/destinations/class-air-wp-sync-term-destination.php:257
 msgid "Description"
 msgstr ""
 
-#: modules/term/destinations/class-air-wp-sync-term-destination.php:264
+#: modules/term/destinations/class-air-wp-sync-term-destination.php:263
 msgid "Parent (by ID)"
 msgstr ""
 
-#: modules/term/destinations/class-air-wp-sync-term-destination.php:270
+#: modules/term/destinations/class-air-wp-sync-term-destination.php:269
 msgid "Parent (by name)"
 msgstr ""
 
@@ -903,20 +907,20 @@ msgid "text"
 msgstr ""
 
 #: assets/src/metabox-mapping/src/App.js:38
-#: assets/src/metabox-mapping/src/MappingRow.js:49
+#: assets/src/metabox-mapping/src/MappingRow.js:105
 msgid "Airtable Field"
 msgstr ""
 
 #: assets/src/metabox-mapping/src/App.js:40
 #: assets/src/metabox-mapping/src/App.js:45
-#: assets/src/metabox-mapping/src/MappingRow.js:32
-#: assets/src/metabox-mapping/src/MappingRow.js:51
-#: assets/src/metabox-mapping/src/MappingRow.js:79
+#: assets/src/metabox-mapping/src/MappingRow.js:43
+#: assets/src/metabox-mapping/src/MappingRow.js:107
+#: assets/src/metabox-mapping/src/MappingRow.js:135
 msgid " (required)"
 msgstr ""
 
 #: assets/src/metabox-mapping/src/App.js:43
-#: assets/src/metabox-mapping/src/MappingRow.js:77
+#: assets/src/metabox-mapping/src/MappingRow.js:133
 msgid "Import As"
 msgstr ""
 
@@ -928,18 +932,18 @@ msgstr ""
 msgid "+ Add Field"
 msgstr ""
 
-#: assets/src/metabox-mapping/src/MappingRow.js:30
+#: assets/src/metabox-mapping/src/MappingRow.js:41
 msgid "Custom Field"
 msgstr ""
 
-#: assets/src/metabox-mapping/src/MappingRow.js:59
+#: assets/src/metabox-mapping/src/MappingRow.js:115
 msgid "Fields"
 msgstr ""
 
-#: assets/src/metabox-mapping/src/MappingRow.js:102
+#: assets/src/metabox-mapping/src/MappingRow.js:159
 msgid "Sort"
 msgstr ""
 
-#: assets/src/metabox-mapping/src/MappingRow.js:106
+#: assets/src/metabox-mapping/src/MappingRow.js:163
 msgid "Remove"
 msgstr ""

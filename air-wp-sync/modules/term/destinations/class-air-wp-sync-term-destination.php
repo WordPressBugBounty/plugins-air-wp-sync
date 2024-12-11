@@ -91,7 +91,6 @@ class Air_WP_Sync_Term_Destination extends Air_WP_Sync_Abstract_Destination {
 		'number',
 		'singleLineText',
 		'singleSelect',
-		'multipleSelect',
 	);
 
 	/**
@@ -294,8 +293,6 @@ class Air_WP_Sync_Term_Destination extends Air_WP_Sync_Abstract_Destination {
 			$term  = get_term_by( 'id', $value, $taxonomy );
 			$value = $term ? $term->term_id : 0;
 		} elseif ( 'taxonomy' === $destination ) {
-			$value = sanitize_title( $value );
-		} elseif ( 'alias_of' === $destination ) {
 			$value = sanitize_title( $value );
 		} elseif ( 'richText' === $source_type ) {
 			// Markdown.

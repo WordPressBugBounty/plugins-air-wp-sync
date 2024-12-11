@@ -51,15 +51,11 @@ class Air_WP_Sync_Term_Importer extends Air_WP_Sync_Abstract_Importer {
 
 		$taxonomy = ! empty( $term_data['taxonomy'] ) ? $term_data['taxonomy'] : $this->config()->get( 'taxonomy' );
 
-		$term_data = array_filter(
-			array_merge(
-				$term_data,
-				array(
-					'slug'        => ! empty( $term_data['slug'] ) ? $term_data['slug'] : '',
-					'parent'      => ! empty( $term_data['parent'] ) ? (int) $term_data['parent'] : '',
-					'description' => ! empty( $term_data['description'] ) ? $term_data['description'] : '',
-					'alias_of'    => ! empty( $term_data['alias_of'] ) ? $term_data['alias_of'] : '',
-				)
+		$term_data = array_merge( $term_data,
+			array(
+				'slug'        => ! empty( $term_data['slug'] ) ? $term_data['slug'] : '',
+				'parent'      => ! empty( $term_data['parent'] ) ? (int) $term_data['parent'] : 0,
+				'description' => ! empty( $term_data['description'] ) ? $term_data['description'] : '',
 			)
 		);
 

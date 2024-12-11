@@ -51,7 +51,7 @@ class Air_WP_Sync_Interval_Formatter {
 			if ( $millsecs ) {
 				$result .= '.' . $millsecs;
 			} else {
-				$result .= '.' . sprintf( "%0${milliseconds_count}d", $millsecs );
+				$result .= '.' . sprintf( "%0{$milliseconds_count}d", $millsecs );
 			}
 		}
 
