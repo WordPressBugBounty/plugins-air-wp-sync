@@ -567,7 +567,7 @@ function airWpSyncGetConfig() {
 
     function beforeUnload() {
         if (originalConfigJson !== $('[name="content"]').val()) {
-            return "You have unsaved changes.";
+            return window.airWpSyncL10n.unsavedChanges || "You have unsaved changes.";
         }
     }
 
@@ -616,7 +616,7 @@ function airWpSyncGetConfig() {
  */
 wp.hooks.addFilter('airwpsync.getErrorMessages', 'wpconnect/airwpsync/errors/required', function (messages, value, rules) {
     if (rules.indexOf('required') > -1 && value.length === 0) {
-        messages.push('This fields is required');
+        messages.push(window.airWpSyncL10n.requiredField || 'This fields is required');
     }
     return messages;
 });
@@ -633,7 +633,7 @@ wp.hooks.addFilter('airwpsync.getErrorMessages', 'wpconnect/airwpsync/errors/map
             return result;
         }, false);
         if (oneFieldIsEmpty) {
-            messages.push('Please select an option in the "Import As" column for all mappings');
+            messages.push(window.airWpSyncL10n.emptyField || 'Please select an option in the "Import As" column for all mappings');
         }
 
         const oneCustomFieldEmpty = value.reduce(function (result, mapping) {
@@ -643,8 +643,18 @@ wp.hooks.addFilter('airwpsync.getErrorMessages', 'wpconnect/airwpsync/errors/map
             return result;
         }, false);
         if (oneCustomFieldEmpty) {
-            messages.push('"Custom Field" fields can\'t be empty.');
+            messages.push(window.airWpSyncL10n.emptyCustomField || '"Custom Field" fields can\'t be empty.');
         }
+    }
+    return messages;
+});
+
+/**
+ * Validation: Selected base is missing
+ */
+wp.hooks.addFilter('airwpsync.getErrorMessages', 'wpconnect/airwpsync/errors/selectedBaseIsMissing', function (messages, value, rules, airWpSync) {
+    if (rules.indexOf('selectedBaseIsMissing') > -1 && airWpSync.config.app_id && !airWpSync.loadingBases && !airWpSync.bases.find(base => base.id === airWpSync.config.app_id)) {
+        messages.push(window.airWpSyncL10n.baseNotAvailable || 'The base you have previously selected is not available anymore, please check your Airtable token access');
     }
     return messages;
 });

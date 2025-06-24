@@ -92,7 +92,7 @@ class Air_WP_Sync_Post_Destination extends Air_WP_Sync_Abstract_Destination {
 			'post_status',
 		);
 
-		if( is_post_type_hierarchical( $post_type ) ){
+		if ( is_post_type_hierarchical( $post_type ) ) {
 			$destination_features[] = 'post_parent';
 		}
 
@@ -204,13 +204,20 @@ class Air_WP_Sync_Post_Destination extends Air_WP_Sync_Abstract_Destination {
 			}
 			$value = iso8601_to_datetime( $value );
 		} elseif ( 'post_parent' === $destination ) {
-			$value = ! empty($value) ? (int) $value : 0;
+			$value = ! empty( $value ) ? (int) $value : 0;
 		} elseif ( 'post_status' === $destination ) {
 			$statuses = Air_WP_Sync_Post_Helpers::get_post_stati();
-			$statuses = array_values( array_map( function( $status ){
-				if( isset( $status['enabled'] ) && $status['enabled'] ) return $status['value'];
-			}, $statuses ) );
-			$value = ! empty( $value ) && in_array( sanitize_title( $value ), $statuses, true ) ? sanitize_title( $value ) : $config->get( 'post_status' );
+			$statuses = array_values(
+				array_map(
+					function ( $status ) {
+						if ( isset( $status['enabled'] ) && $status['enabled'] ) {
+							return $status['value'];
+						}
+					},
+					$statuses
+				)
+			);
+			$value    = ! empty( $value ) && in_array( sanitize_title( $value ), $statuses, true ) ? sanitize_title( $value ) : $config->get( 'post_status' );
 		} else {
 			// Markdown
 			if ( 'richText' === $source_type ) {

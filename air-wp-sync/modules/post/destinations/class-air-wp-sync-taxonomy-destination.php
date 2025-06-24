@@ -85,7 +85,7 @@ class Air_WP_Sync_Taxonomy_Destination extends Air_WP_Sync_Abstract_Destination 
 				$enabled            = in_array( $taxonomy->name, $whitelist, true );
 				$taxonomy_options[] = array(
 					'value'             => $taxonomy->name,
-					'label'             => sprintf( '%s (%s)', $taxonomy->labels->singular_name, $taxonomy->name ) . ( ! $enabled ? ' ' . __( '(Pro version)', 'airwpsync' ) : '' ),
+					'label'             => sprintf( '%s (%s)', $taxonomy->labels->singular_name, $taxonomy->name ) . ( ! $enabled ? ' ' . __( '(Pro+ version)', 'airwpsync' ) : '' ),
 					'enabled'           => $enabled,
 					'form_options'      => array(
 						array(
@@ -149,7 +149,7 @@ class Air_WP_Sync_Taxonomy_Destination extends Air_WP_Sync_Abstract_Destination 
 		$source_type = $this->get_source_type( $airtable_id, $importer );
 
 		// Markdown
-		if( 'airwpsyncProxyRecordLinks|multipleSelects' === $source_type ){
+		if ( 'airwpsyncProxyRecordLinks|multipleSelects' === $source_type ) {
 			$value = Air_WP_Sync_Helper::array_flatten( $value );
 			$value = array_values( array_unique( $value ) );
 		} elseif ( 'richText' === $source_type ) {

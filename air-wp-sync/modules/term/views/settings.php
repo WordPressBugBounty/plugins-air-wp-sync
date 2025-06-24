@@ -2,7 +2,7 @@
 /**
  * Displays term module settings.
  *
- * @package Air_WP_Sync_Pro
+ * @package Air_WP_Sync_Free
  */
 
 /**

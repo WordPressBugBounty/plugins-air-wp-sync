@@ -34,7 +34,7 @@ class Air_WP_Sync_Admin_Connections_List {
 	 * Renders the admin table column HTML
 	 *
 	 * @param string $column_name The name of the column to display.
-	 * @param int $post_id The current post ID.
+	 * @param int    $post_id The current post ID.
 	 * @return void
 	 */
 	public function admin_table_columns_html( $column_name, $post_id ) {
@@ -82,7 +82,7 @@ class Air_WP_Sync_Admin_Connections_List {
 	/**
 	 * Generates row action links
 	 *
-	 * @param array $actions Row actions output for post.
+	 * @param array   $actions Row actions output for post.
 	 * @param WP_Post $post The current post ID.
 	 * @return array
 	 */

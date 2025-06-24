@@ -2,10 +2,10 @@
 /**
  * Airtable Filters
  *
- * @package Air_WP_Sync
+ * @package Air_WP_Sync_Free
  */
 
- namespace Air_WP_Sync_Free;
+namespace Air_WP_Sync_Free;
 
 /**
  * Class Air_WP_Sync_Filters

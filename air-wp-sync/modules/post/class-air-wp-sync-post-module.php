@@ -75,7 +75,7 @@ class Air_WP_Sync_Post_Module extends Air_WP_Sync_Abstract_Module {
 		$importer     = Air_WP_Sync_Helper::get_importer_by_id( $post->ID );
 		$post_types   = array_filter(
 			Air_WP_Sync_Post_Helpers::get_post_types(),
-			function( $post_type ) use ( $importer ) {
+			function ( $post_type ) use ( $importer ) {
 				return ! $importer || ( $importer->config()->get( 'post_type' ) !== 'custom' || $importer->config()->get( 'post_type_name' ) !== $post_type['value'] );
 			}
 		);

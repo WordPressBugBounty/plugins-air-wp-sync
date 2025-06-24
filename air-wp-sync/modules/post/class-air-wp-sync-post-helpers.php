@@ -54,7 +54,7 @@ class Air_WP_Sync_Post_Helpers {
 			'nf_sub',
 		);
 
-		$enabled    = array( 'page', 'post' );
+		$enabled = array( 'page', 'post' );
 
 		$post_types = array();
 
@@ -72,14 +72,14 @@ class Air_WP_Sync_Post_Helpers {
 
 			$post_types[] = array(
 				'value'   => $wp_post_type->name,
-				'label'   => $wp_post_type->labels->singular_name . ( ! in_array( $wp_post_type->name, $enabled, true ) ? ' ' . __( '(Pro version)', 'airwpsync' ) : '' ),
+				'label'   => $wp_post_type->labels->singular_name . ( ! in_array( $wp_post_type->name, $enabled, true ) ? ' ' . __( '(Pro+ version)', 'airwpsync' ) : '' ),
 				'enabled' => in_array( $wp_post_type->name, $enabled, true ),
 			);
 		}
 
 		$post_types[] = array(
 			'value'   => 'custom',
-			'label'   => __( 'Create new post type... (Pro version)', 'air-wp-sync' ),
+			'label'   => __( 'Create new post type... (Pro+ version)', 'air-wp-sync' ),
 			'enabled' => false,
 		);
 
@@ -101,7 +101,7 @@ class Air_WP_Sync_Post_Helpers {
 			$enabled      = in_array( $wp_post_status->name, $whitelist, true );
 			$post_stati[] = array(
 				'value'   => $wp_post_status->name,
-				'label'   => $wp_post_status->label . ( ! $enabled ? ' ' . __( '(Pro version)', 'airwpsync' ) : '' ),
+				'label'   => $wp_post_status->label . ( ! $enabled ? ' ' . __( '(Pro+ version)', 'airwpsync' ) : '' ),
 				'enabled' => $enabled,
 			);
 		}

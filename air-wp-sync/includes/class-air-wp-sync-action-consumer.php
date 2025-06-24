@@ -9,7 +9,7 @@ class Air_WP_Sync_Action_Consumer {
 	/**
 	 * Constructor
 	 */
-	public function __construct( ) {
+	public function __construct() {
 		add_action( 'airwpsync_process_records', array( $this, 'consume' ), 10, 4 );
 	}
 
@@ -74,7 +74,7 @@ class Air_WP_Sync_Action_Consumer {
 	 * Append new content_id to the run result
 	 */
 	protected function append_run_result( $content_id, $importer ) {
-		$content_ids = get_post_meta( $importer->infos()->get( 'id' ), 'content_ids', true ) ?: array();
+		$content_ids = get_post_meta( $importer->infos()->get( 'id' ), 'content_ids', true ) ?? array();
 		if ( ! is_array( $content_ids ) ) {
 			$content_ids = array();
 		}

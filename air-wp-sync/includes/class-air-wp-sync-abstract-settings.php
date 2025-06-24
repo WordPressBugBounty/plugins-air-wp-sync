@@ -23,7 +23,7 @@ abstract class Air_WP_Sync_Abstract_Settings implements \JsonSerializable {
 		return array_reduce(
 			explode( '.', $key ),
 			function ( $o, $p ) {
-				return is_array($o) && array_key_exists( $p, $o ) ? $o[ $p ] : false;
+				return is_array( $o ) && array_key_exists( $p, $o ) ? $o[ $p ] : false;
 			},
 			$this->settings
 		);
@@ -56,5 +56,4 @@ abstract class Air_WP_Sync_Abstract_Settings implements \JsonSerializable {
 	public function jsonSerialize() {
 		return $this->settings;
 	}
-
 }

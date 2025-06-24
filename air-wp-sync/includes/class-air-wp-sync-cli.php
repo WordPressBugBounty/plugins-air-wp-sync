@@ -10,7 +10,7 @@ class Air_WP_Sync_CLI {
 	 */
 	public function list( $args, $assoc_args ) {
 		$formatted_importers = array_map(
-			function( $importer ) {
+			function ( $importer ) {
 				return array(
 					'slug'  => $importer->infos()->get( 'slug' ),
 					'title' => $importer->infos()->get( 'title' ),
@@ -63,7 +63,7 @@ class Air_WP_Sync_CLI {
 	protected function get_importer_by_slug( $slug ) {
 		return array_reduce(
 			Air_WP_Sync_Helper::get_importers(),
-			function( $result, $importer ) use ( $slug ) {
+			function ( $result, $importer ) use ( $slug ) {
 				return $importer->infos()->get( 'slug' ) === $slug ? $importer : $result;
 			},
 			false

@@ -97,8 +97,8 @@ class Air_WP_Sync_User_Importer extends Air_WP_Sync_Abstract_Importer {
 	 * Get existing content id
 	 */
 	protected function get_existing_content_id( $record ) {
-		$record = apply_filters( 'airwpsync/pre_check_existing_content', $record, $this, [ 'user::user_email' ], $this->get_import_fields_options() );
-		$mapping              = ! empty( $this->config()->get( 'mapping' ) ) ? $this->config()->get( 'mapping' ) : array();
+		$record         = apply_filters( 'airwpsync/pre_check_existing_content', $record, $this, array( 'user::user_email' ), $this->get_import_fields_options() );
+		$mapping        = ! empty( $this->config()->get( 'mapping' ) ) ? $this->config()->get( 'mapping' ) : array();
 		$airtable_value = '';
 		foreach ( $mapping as $mapping_field ) {
 			if ( 'user::user_email' === $mapping_field['wordpress'] ) {
@@ -107,7 +107,7 @@ class Air_WP_Sync_User_Importer extends Air_WP_Sync_Abstract_Importer {
 			}
 		}
 
-		$user  = is_email( $airtable_value ) ? get_user_by( 'email', $airtable_value ) : get_user_by( 'login', $airtable_value );
+		$user = is_email( $airtable_value ) ? get_user_by( 'email', $airtable_value ) : get_user_by( 'login', $airtable_value );
 		return $user ? $user->ID : false;
 	}
 

@@ -11,7 +11,7 @@ class Air_WP_Sync_Metabox_Import_Infos {
 	/**
 	 * Constructor
 	 */
-	public function __construct( ) {
+	public function __construct() {
 
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
 		add_action( 'wp_ajax_air_wp_sync_trigger_update', array( $this, 'trigger_update' ) );
@@ -100,7 +100,7 @@ class Air_WP_Sync_Metabox_Import_Infos {
 					array(
 						'hook'                  => 'airwpsync_process_records',
 						'partial_args_matching' => 'like',
-						'status'    => [\ActionScheduler_Store::STATUS_RUNNING, \ActionScheduler_Store::STATUS_PENDING],
+						'status'                => array( \ActionScheduler_Store::STATUS_RUNNING, \ActionScheduler_Store::STATUS_PENDING ),
 						'args'                  => array(
 							'importer_id' => $importer_id,
 							'run_id'      => $importer->get_run_id(),
@@ -113,7 +113,7 @@ class Air_WP_Sync_Metabox_Import_Infos {
 					array(
 						'hook'                  => 'airwpsync_process_records',
 						'partial_args_matching' => 'like',
-						'status'    => [\ActionScheduler_Store::STATUS_RUNNING, \ActionScheduler_Store::STATUS_PENDING, \ActionScheduler_Store::STATUS_COMPLETE, \ActionScheduler_Store::STATUS_CANCELED, \ActionScheduler_Store::STATUS_FAILED],
+						'status'                => array( \ActionScheduler_Store::STATUS_RUNNING, \ActionScheduler_Store::STATUS_PENDING, \ActionScheduler_Store::STATUS_COMPLETE, \ActionScheduler_Store::STATUS_CANCELED, \ActionScheduler_Store::STATUS_FAILED ),
 						'args'                  => array(
 							'importer_id' => $importer_id,
 							'run_id'      => $importer->get_run_id(),
@@ -199,7 +199,7 @@ class Air_WP_Sync_Metabox_Import_Infos {
 		$last_updated = $importer_id ? get_post_meta( $importer_id, 'last_updated', true ) : '';
 		$next_sync    = $importer_id ? wp_next_scheduled( 'air_wp_sync_importer_' . $importer_id ) : '';
 		$last_error   = $forced_error ? $forced_error : ( $importer_id ? get_post_meta( $importer_id, 'last_error', true ) : '' );
-
+		$errors       = $importer_id ? get_post_meta( $importer_id, 'errors', true ) : array();
 		$status_class = '';
 		if ( 'success' === $status ) {
 			$status_class = 'dashicons-before dashicons-yes-alt';

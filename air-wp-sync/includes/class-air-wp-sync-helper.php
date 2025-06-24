@@ -21,7 +21,7 @@ class Air_WP_Sync_Helper {
 	public static function get_importer_by_id( $id ) {
 		return array_reduce(
 			self::get_importers(),
-			function( $result, $importer ) use ( $id ) {
+			function ( $result, $importer ) use ( $id ) {
 				return $importer->infos()->get( 'id' ) === (int) $id ? $importer : $result;
 			},
 			false
@@ -60,13 +60,13 @@ class Air_WP_Sync_Helper {
 	/**
 	 * Get table from id.
 	 *
-	 * @param array $tables
+	 * @param array  $tables
 	 * @param string $table_id
 	 *
 	 * @return \stdClass|null
 	 */
-	public static function get_table_by_id($tables, $table_id) {
-		$table  = null;
+	public static function get_table_by_id( $tables, $table_id ) {
+		$table = null;
 
 		if ( $tables ) {
 			foreach ( $tables as $t ) {
@@ -104,26 +104,26 @@ class Air_WP_Sync_Helper {
 
 	/**
 	 * Return true if the run started more than two hours ago
-	 * 
-	 * @param   string  $start_date    Date the run started
-	 * @param   string  $current_date
-	 * @return  bool  	true if the run started more than two hours ago
+	 *
+	 * @param   string $start_date    Date the run started
+	 * @param   string $current_date
+	 * @return  bool    true if the run started more than two hours ago
 	 */
 	public static function should_refresh_attachment_urls( $start_date, $current_date = null ) {
-		if ( ! $start_date) {
+		if ( ! $start_date ) {
 			return false;
 		}
-		if ( ! $current_date) {
+		if ( ! $current_date ) {
 			$current_date = gmdate( 'Y-m-d H:i:s' );
 		}
 		try {
-			$current_datetime = \DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $current_date );
+			$current_datetime              = \DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $current_date );
 			$start_datetime_plus_two_hours = \DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $start_date )->add( new \DateInterval( 'PT2H' ) );
 
 			if ( $current_datetime < $start_datetime_plus_two_hours ) {
 				return false;
 			}
-		} catch (\Throwable $exception) {
+		} catch ( \Throwable $exception ) {
 			return false;
 		}
 
@@ -132,37 +132,45 @@ class Air_WP_Sync_Helper {
 
 	/**
 	 * Returns a list of attachment fields ids
-	 * 
-	 * @param  array  $fields  Array of table fields
-	 * @param  array  		   Array of multipleAttachments field ids.
+	 *
+	 * @param  array                                                  $fields  Array of table fields
+	 * @param  array           Array of multipleAttachments field ids.
 	 */
 	public static function get_attachment_fields_id( $fields ) {
-		return array_reduce( $fields, function ( $carry, $field ) {
-			if ( $field->type === 'multipleAttachments' ) {
-				$carry[]=$field->id;
-			}
-			return $carry;
-		}, [] );
+		return array_reduce(
+			$fields,
+			function ( $carry, $field ) {
+				if ( $field->type === 'multipleAttachments' ) {
+					$carry[] = $field->id;
+				}
+				return $carry;
+			},
+			array()
+		);
 	}
 
 	/**
 	 * Recursively flatten a given array into a one dimensional array
-	 * 
-	 * @param  array  $arr  The initial array.
+	 *
+	 * @param  array $arr  The initial array.
 	 * @return  array  $arr  Flattened array.
 	 */
-	public static function array_flatten( $arr ){
-		if( ! is_array( $arr ) ){
+	public static function array_flatten( $arr ) {
+		if ( ! is_array( $arr ) ) {
 			$arr = (array) $arr;
 		}
-		$arr = array_reduce( $arr, function( $carry, $item ){
-			if ( is_array( $item ) ) {
-				$carry = array_merge( $carry, self::array_flatten( $item ) );
-			} else {
-				$carry[] = $item;
-			}
-			return $carry;
-		}, [] );
+		$arr = array_reduce(
+			$arr,
+			function ( $carry, $item ) {
+				if ( is_array( $item ) ) {
+					$carry = array_merge( $carry, self::array_flatten( $item ) );
+				} else {
+					$carry[] = $item;
+				}
+				return $carry;
+			},
+			array()
+		);
 		return $arr;
 	}
 }

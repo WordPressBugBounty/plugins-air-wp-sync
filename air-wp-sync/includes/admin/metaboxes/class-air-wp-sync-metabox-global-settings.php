@@ -8,7 +8,7 @@ use Exception;
  * Air_WP_Sync_Metabox_Global_Settings
  */
 class Air_WP_Sync_Metabox_Global_Settings {
-	
+
 	/**
 	 * Filters class instance.
 	 *
@@ -18,7 +18,7 @@ class Air_WP_Sync_Metabox_Global_Settings {
 
 	/**
 	 * Constructor
-	 * 	 
+	 *
 	 * @param Air_WP_Sync_Filters $filters Filters class instance.
 	 */
 	public function __construct( $filters ) {
@@ -112,11 +112,10 @@ class Air_WP_Sync_Metabox_Global_Settings {
 		$api_key = sanitize_text_field( $params['apiKey'] );
 		$app_id  = sanitize_text_field( $params['appId'] );
 
-		$options = [];
+		$options = array();
 		try {
-			$options  = json_decode(sanitize_text_field( $params['options'] ), true);
-		} catch (\Exception $e) {
-
+			$options = json_decode( sanitize_text_field( $params['options'] ), true );
+		} catch ( \Exception $e ) {
 		}
 
 		try {

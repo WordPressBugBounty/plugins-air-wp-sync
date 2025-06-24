@@ -9,7 +9,7 @@ class Air_WP_Sync_Metabox_Sync_Settings {
 	/**
 	 * Constructor
 	 */
-	public function __construct( ) {
+	public function __construct() {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
 	}
 
@@ -55,16 +55,19 @@ class Air_WP_Sync_Metabox_Sync_Settings {
 		$whitelist = array( 'hourly', 'twicedaily', 'daily', 'weekly' );
 		$schedules = array();
 
-		$wp_schedules = array_filter( wp_get_schedules(), function( $schedule ){
-			return isset( $schedule['interval'] ) && $schedule['interval'] >= 1800;
-		} );
+		$wp_schedules = array_filter(
+			wp_get_schedules(),
+			function ( $schedule ) {
+				return isset( $schedule['interval'] ) && $schedule['interval'] >= 1800;
+			}
+		);
 
 		foreach ( $wp_schedules as $key => $schedule ) {
 			if ( in_array( $key, $whitelist, true ) || strpos( $key, 'airwpsync_' ) === 0 ) {
 				$enabled                            = $schedule['interval'] >= DAY_IN_SECONDS;
 				$schedules[ $schedule['interval'] ] = array(
 					'value'   => $key,
-					'label'   => $schedule['display'] . ( ! $enabled ? ' ' . __( '(Pro version)', 'airwpsync' ) : '' ),
+					'label'   => $schedule['display'] . ( ! $enabled ? ' ' . __( '(Pro+ version)', 'airwpsync' ) : '' ),
 					'enabled' => $enabled,
 				);
 			}

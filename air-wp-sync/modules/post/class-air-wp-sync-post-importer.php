@@ -22,17 +22,22 @@ class Air_WP_Sync_Post_Importer extends Air_WP_Sync_Abstract_Importer {
 		parent::load_settings( $importer_post_object );
 
 		// Update WordPress destination with new keys (Modules update).
-		if ($this->config->get('mapping')) {
-			$this->config->set('mapping', array_map(function ($mapping) {
-				if ('meta::custom_field' === $mapping['wordpress']) {
-					$mapping['wordpress'] = 'postmeta::custom_field';
-				} elseif ('meta::_thumbnail_id' === $mapping['wordpress']) {
-					$mapping['wordpress'] = 'postmeta::_thumbnail_id';
-				}
-				return $mapping;
-			}, $this->config->get('mapping')));
+		if ( $this->config->get( 'mapping' ) ) {
+			$this->config->set(
+				'mapping',
+				array_map(
+					function ( $mapping ) {
+						if ( 'meta::custom_field' === $mapping['wordpress'] ) {
+							$mapping['wordpress'] = 'postmeta::custom_field';
+						} elseif ( 'meta::_thumbnail_id' === $mapping['wordpress'] ) {
+							$mapping['wordpress'] = 'postmeta::_thumbnail_id';
+						}
+						return $mapping;
+					},
+					$this->config->get( 'mapping' )
+				)
+			);
 		}
-
 	}
 
 	/**
@@ -43,7 +48,7 @@ class Air_WP_Sync_Post_Importer extends Air_WP_Sync_Abstract_Importer {
 		$cpt_name = $this->config()->get( 'post_type_name' );
 
 		if ( $cpt_slug && $cpt_name ) {
-			register_post_type(
+			$result = register_post_type(
 				$cpt_slug,
 				array(
 					'labels'   => array(
@@ -58,6 +63,9 @@ class Air_WP_Sync_Post_Importer extends Air_WP_Sync_Abstract_Importer {
 					),
 				)
 			);
+			if ( is_wp_error( $result ) ) {
+				$this->add_error( $result );
+			}
 		}
 	}
 

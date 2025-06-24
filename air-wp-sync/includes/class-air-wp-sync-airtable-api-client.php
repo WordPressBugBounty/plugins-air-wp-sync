@@ -32,10 +32,12 @@ class Air_WP_Sync_Airtable_Api_Client {
 	 * Get tables
 	 */
 	public function get_tables( $base_id, $use_cache = true ) {
-		$tables = [];
+		$tables         = array();
 		$transient_name = sprintf( 'airwpsync_tables_%s', $base_id );
-		if( $use_cache ) $tables = get_transient( $transient_name );
-		if( empty( $tables ) ){
+		if ( $use_cache ) {
+			$tables = get_transient( $transient_name );
+		}
+		if ( empty( $tables ) ) {
 			$tables = $this->make_api_request( "/meta/bases/$base_id/tables" );
 			set_transient( $transient_name, $tables, 15 * MINUTE_IN_SECONDS );
 		}

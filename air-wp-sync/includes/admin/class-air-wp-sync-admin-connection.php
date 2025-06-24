@@ -1,4 +1,9 @@
 <?php
+/**
+ * Manages admin connections pages
+ *
+ * @package Air_WP_Sync_Free
+ */
 
 namespace Air_WP_Sync_Free;
 
@@ -7,7 +12,11 @@ namespace Air_WP_Sync_Free;
  */
 class Air_WP_Sync_Admin_Connection {
 
-	/** @var bool Whether we should display max connection notice */
+	/**
+	 * Whether we should display max connection notice.
+	 *
+	 * @var bool
+	 */
 	protected $display_max_connection = false;
 
 	/**
@@ -26,7 +35,6 @@ class Air_WP_Sync_Admin_Connection {
 		add_filter( 'bulk_post_updated_messages', array( $this, 'bulk_post_updated_messages' ), 10, 2 );
 		add_filter( 'redirect_post_location', array( $this, 'redirect_post_location' ), 10, 2 );
 		add_action( 'admin_notices', array( $this, 'admin_notices' ), 10 );
-
 	}
 
 	/**
@@ -55,12 +63,14 @@ class Air_WP_Sync_Admin_Connection {
 		$screen = get_current_screen();
 		if ( is_object( $screen ) && 'airwpsync-connection' === $screen->id ) {
 			wp_enqueue_script( 'air-wp-sync-alpine', plugins_url( 'assets/js/alpinejs@3.10.2.min.js', AIR_WP_SYNC_PLUGIN_FILE ), false, AIR_WP_SYNC_VERSION, false );
-			wp_enqueue_script( 'air-wp-sync-filters', plugins_url( 'assets/js/filters/main.js', AIR_WP_SYNC_PLUGIN_FILE ), false, AIR_WP_SYNC_VERSION, false );
-			wp_enqueue_script( 'air-wp-sync-admin', plugins_url( 'assets/js/admin-page.js', AIR_WP_SYNC_PLUGIN_FILE ), array( 'air-wp-sync-alpine', 'jquery-ui-tooltip', 'wp-hooks', 'air-wp-sync-filters' ), AIR_WP_SYNC_VERSION, false );
+			wp_enqueue_script( 'air-wp-sync-admin-filters', plugins_url( 'assets/js/filters/main.js', AIR_WP_SYNC_PLUGIN_FILE ), array( 'wp-i18n' ), AIR_WP_SYNC_VERSION, false );
+			wp_set_script_translations( 'air-wp-sync-admin-filters', 'air-wp-sync', AIR_WP_SYNC_PLUGIN_DIR . 'languages/' );
+			wp_enqueue_script( 'air-wp-sync-admin', plugins_url( 'assets/js/admin-page.js', AIR_WP_SYNC_PLUGIN_FILE ), array( 'air-wp-sync-alpine', 'jquery-ui-tooltip', 'wp-hooks', 'air-wp-sync-admin-filters', 'wp-i18n' ), AIR_WP_SYNC_VERSION, false );
 			wp_add_inline_script( 'air-wp-sync-admin', 'var airwpsyncImporterData = ' . $this->get_config(), 'before' );
 			wp_add_inline_script( 'air-wp-sync-admin', 'var airWpSync = ' . $this->get_modules_config(), 'before' );
 			wp_localize_script( 'air-wp-sync-admin', 'airWpSyncL10n', $this->get_l10n_strings() );
-			wp_enqueue_script( 'air-wp-sync-admin-metabox-mapping', plugins_url( 'assets/js/metabox-mapping/main.js', AIR_WP_SYNC_PLUGIN_FILE ), array( 'air-wp-sync-admin' ), AIR_WP_SYNC_VERSION, false );
+			wp_enqueue_script( 'air-wp-sync-admin-metabox-mapping', plugins_url( 'assets/js/metabox-mapping/main.js', AIR_WP_SYNC_PLUGIN_FILE ), array( 'air-wp-sync-admin', 'wp-i18n' ), AIR_WP_SYNC_VERSION, false );
+			wp_set_script_translations( 'air-wp-sync-admin-metabox-mapping', 'air-wp-sync', AIR_WP_SYNC_PLUGIN_DIR . 'languages/' );
 			wp_enqueue_style( 'air-wp-sync-ui', plugins_url( 'assets/js/air-wp-sync-ui/library/index.css', AIR_WP_SYNC_PLUGIN_FILE ), false, AIR_WP_SYNC_VERSION );
 			// .airwpsync-ui class is required by 'air-wp-sync-ui' style.
 			add_filter(
@@ -75,6 +85,9 @@ class Air_WP_Sync_Admin_Connection {
 
 	/**
 	 * Add defer attribute to AlpineJS script
+	 *
+	 * @param string $tag The `<script>` tag for the enqueued script.
+	 * @param string $handle The script's registered handle.
 	 */
 	public function add_alpine_defer_attribute( $tag, $handle ) {
 		if ( 'air-wp-sync-alpine' === $handle ) {
@@ -96,31 +109,38 @@ class Air_WP_Sync_Admin_Connection {
 
 	/**
 	 * After importer is saved
+	 *
+	 * @param int     $post_id Post ID.
+	 * @param WP_Post $post Post object.
+	 * @param bool    $update Whether this is an existing post being updated.
 	 */
 	public function save_post( $post_id, $post, $update ) {
 		if ( ! $update || wp_is_post_revision( $post_id ) || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || 'airwpsync-connection' !== $post->post_type ) {
 			return;
 		}
 
-		// FLush rewrite rules
+		// FLush rewrite rules.
 		delete_option( 'rewrite_rules' );
 
-		// Clear schedule
+		// Clear schedule.
 		wp_clear_scheduled_hook( 'air_wp_sync_importer_' . $post_id );
 	}
 
 	/**
 	 * Before importer is saved
+	 *
+	 * @param array $data An array of slashed, sanitized, and processed post data.
+	 * @param array $postarr An array of sanitized (and slashed) but otherwise unmodified post data.
 	 */
 	public function wp_insert_post_data( $data, $postarr ) {
 		if ( 'airwpsync-connection' !== $postarr['post_type'] ) {
 			return $data;
 		}
 
-		// Limit active importers
+		// Limit active importers.
 		$post_id = $postarr['ID'] ?? 0;
 
-		if ( ! isset( $data['post_status'] ) || $data['post_status'] === 'publish' ) {
+		if ( ! isset( $data['post_status'] ) || 'publish' === $data['post_status'] ) {
 			$importers = get_posts(
 				array(
 					'post_type'      => 'airwpsync-connection',
@@ -135,7 +155,7 @@ class Air_WP_Sync_Admin_Connection {
 			}
 		}
 
-		// Update slug
+		// Update slug.
 		if ( array_key_exists( 'post_title', $data ) ) {
 			$data['post_name'] = sanitize_title( $data['post_title'] );
 		}
@@ -145,6 +165,8 @@ class Air_WP_Sync_Admin_Connection {
 
 	/**
 	 * Customize connections update messages
+	 *
+	 * @param array[] $messages Post updated messages. For defaults see `$messages` declarations above.
 	 */
 	public function post_updated_messages( $messages ) {
 		$back_link_html = sprintf(
@@ -170,6 +192,10 @@ class Air_WP_Sync_Admin_Connection {
 
 	/**
 	 * Customize connections bulk update messages
+	 *
+	 * @param array[] $messages Arrays of messages, each keyed by the corresponding post type. Messages are
+	 *                               keyed with 'updated', 'locked', 'deleted', 'trashed', and 'untrashed'.
+	 * @param int[]   $bulk_counts Array of item counts for each message, used to build internationalized strings.
 	 */
 	public function bulk_post_updated_messages( $messages, $bulk_counts ) {
 		$messages['airwpsync-connection'] = array_replace(
@@ -197,7 +223,7 @@ class Air_WP_Sync_Admin_Connection {
 	 */
 	protected function get_config() {
 		global $post;
-		$importer = Air_WP_Sync_Helper::get_importer_by_id($post->ID);
+		$importer = Air_WP_Sync_Helper::get_importer_by_id( $post->ID );
 		return $importer ? wp_json_encode( $importer->config() ) : '{}';
 	}
 
@@ -206,7 +232,7 @@ class Air_WP_Sync_Admin_Connection {
 	 */
 	protected function get_modules_config() {
 		$config = array_map(
-			function( $module ) {
+			function ( $module ) {
 				return array(
 					'mappingOptions' => $module->get_mapping_options(),
 					'extraConfig'    => $module->get_extra_config(),
@@ -222,8 +248,13 @@ class Air_WP_Sync_Admin_Connection {
 	 */
 	protected function get_l10n_strings() {
 		$l10n_strings = array(
-			'startingUpdate' => __( 'In progress...', 'air-wp-sync' ),
-			'canceling'      => __( 'Canceling...', 'air-wp-sync' ),
+			'startingUpdate'   => __( 'In progress...', 'air-wp-sync' ),
+			'canceling'        => __( 'Canceling...', 'air-wp-sync' ),
+			'unsavedChanges'   => __( 'You have unsaved changes.', 'air-wp-sync' ),
+			'requiredField'    => __( 'This fields is required', 'air-wp-sync' ),
+			'emptyField'       => __( 'Please select an option in the "Import As" column for all mappings', 'air-wp-sync' ),
+			'emptyCustomField' => __( '"Custom Field" fields can\'t be empty.', 'air-wp-sync' ),
+			'baseNotAvailable' => __( 'The base you have previously selected is not available anymore, please check your Airtable token access', 'air-wp-sync' ),
 		);
 		return apply_filters( 'airwpsync/get_l10n_strings', $l10n_strings );
 	}
@@ -231,6 +262,10 @@ class Air_WP_Sync_Admin_Connection {
 
 	/**
 	 * Add display max connection parameter to location url
+	 *
+	 * @param  string $location  Original location url.
+	 * @param  int    $post_id Post ID.
+	 * @return  string  $location
 	 */
 	public function redirect_post_location( $location, $post_id ) {
 		if ( $this->display_max_connection ) {
@@ -250,7 +285,7 @@ class Air_WP_Sync_Admin_Connection {
 				'<div class="%1$s"><p>%2$s</p></div>',
 				esc_attr( 'notice notice-error' ),
 				wp_kses(
-					__( 'Thank you for using the Free Version of our plugin! You already have an active connection. To be able to create as many active connections as you want, <a href="https://wpconnect.co/air-wp-sync-plugin/#pricing-plan" target="_blank">Upgrade to Pro Version</a>.', 'air-wp-sync' ),
+					__( 'Thank you for using the Free Version of our plugin! You already have an active connection. To be able to create as many active connections as you want, <a href="https://wpconnect.co/air-wp-sync-plugin/#pricing-plan" target="_blank">Upgrade to Pro+ Version</a>.', 'air-wp-sync' ),
 					array(
 						'a' => array(
 							'href'   => array(),
@@ -261,5 +296,4 @@ class Air_WP_Sync_Admin_Connection {
 			);
 		}
 	}
-
 }

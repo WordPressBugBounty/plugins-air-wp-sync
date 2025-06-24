@@ -61,9 +61,9 @@ abstract class Air_WP_Sync_Abstract_Importer {
 	 * Config getter
 	 */
 	public function config() {
-		if (!$this->config->get( 'enable_link_to_another_record' ) && $this->config->get( 'mapping' )) {
-			foreach ($this->config->get( 'mapping' ) as $mapping) {
-				if ($mapping['airtable'] && strpos($mapping['airtable'], '__rel__') === 0) {
+		if ( ! $this->config->get( 'enable_link_to_another_record' ) && $this->config->get( 'mapping' ) ) {
+			foreach ( $this->config->get( 'mapping' ) as $mapping ) {
+				if ( $mapping['airtable'] && strpos( $mapping['airtable'], '__rel__' ) === 0 ) {
 					$this->config->set( 'enable_link_to_another_record', 'yes' );
 					break;
 				}
@@ -160,13 +160,58 @@ abstract class Air_WP_Sync_Abstract_Importer {
 	}
 
 	/**
+	 * Reset errors.
+	 *
+	 * @return void
+	 */
+	public function reset_errors() {
+		delete_post_meta( $this->infos()->get( 'id' ), 'errors' );
+	}
+
+	/**
+	 * Add an error (string or WP_Error object ) to the importer error list.
+	 *
+	 * @param string|WP_Error $error Error to add to the importer error list.
+	 *
+	 * @return void
+	 */
+	public function add_error( $error ) {
+		$importer_id = $this->infos()->get( 'id' );
+		$errors      = get_post_meta( $importer_id, 'errors', true );
+		if ( ! is_array( $errors ) ) {
+			$errors = array();
+		}
+		$errors[] = $error;
+		update_post_meta( $importer_id, 'errors', $errors );
+	}
+
+	/**
+	 * Return errors.
+	 *
+	 * @return array
+	 */
+	public function get_errors() {
+		$importer_id = $this->infos()->get( 'id' );
+		$errors      = get_post_meta( $importer_id, 'errors', true );
+		if ( ! is_array( $errors ) ) {
+			$errors = array();
+		}
+		// Backward compatibility.
+		$last_error = get_post_meta( $importer_id, 'last_error', true );
+		if ( $last_error ) {
+			array_unshift( $errors, $last_error );
+		}
+		return $errors;
+	}
+
+	/**
 	 * Process an airtable record import
 	 */
 	public function process_airtable_record( $record ) {
 		$this->log( sprintf( 'Record ID %s', $record->id ) );
 		try {
 			// Check if we have existing content for this record
-			$content_id = $this->get_existing_content_id( $record );
+			$content_id           = $this->get_existing_content_id( $record );
 			$should_import_record = true;
 			if ( $content_id ) {
 				$this->log( sprintf( '- Found matching content, ID %s', $content_id ) );
@@ -178,7 +223,7 @@ abstract class Air_WP_Sync_Abstract_Importer {
 			} else {
 				$content_id = null;
 			}
-			if ($should_import_record) {
+			if ( $should_import_record ) {
 				$record     = $this->pre_import_record_filter( $record );
 				$content_id = $this->import_record( $record, $content_id );
 			}
@@ -195,12 +240,12 @@ abstract class Air_WP_Sync_Abstract_Importer {
 	/**
 	 * Checks whether the import started more than two hours ago.
 	 * If yes, then refresh record if attachment fields are involved.
-	 * 
-	 * @param   array  $record
+	 *
+	 * @param   array $record
 	 * @return  array  $record
 	 */
 	public function pre_import_record_filter( $record ) {
-		$start_date = get_option('airwpsync-' . $this->infos()->get( 'id' ) . '-run-' . $this->get_run_id() . '-start-date');
+		$start_date = get_option( 'airwpsync-' . $this->infos()->get( 'id' ) . '-run-' . $this->get_run_id() . '-start-date' );
 		// If we have started the import at least 2 hours ago, attachment URLs could be expired, in that case we should refresh the record.
 		if ( Air_WP_Sync_Helper::should_refresh_attachment_urls( $start_date ) ) {
 			$attachment_fields = Air_WP_Sync_Helper::get_attachment_fields_id( $this->get_airtable_fields() );
@@ -208,9 +253,9 @@ abstract class Air_WP_Sync_Abstract_Importer {
 				try {
 					$base_id  = $this->config()->get( 'app_id' );
 					$table_id = $this->config()->get( 'table' );
-					$record   = $this->get_api_client()->get_record($base_id, $table_id, $record->id, array( 'returnFieldsByFieldId' => true ));
-				} catch (\Throwable $exception) {
-					$this->log(sprintf(__('Could not refresh attachment URLs: %s', ''), $exception->getMessage()));
+					$record   = $this->get_api_client()->get_record( $base_id, $table_id, $record->id, array( 'returnFieldsByFieldId' => true ) );
+				} catch ( \Throwable $exception ) {
+					$this->log( sprintf( __( 'Could not refresh attachment URLs: %s', '' ), $exception->getMessage() ) );
 				}
 			}
 		}
@@ -261,6 +306,10 @@ abstract class Air_WP_Sync_Abstract_Importer {
 		update_post_meta( $importer_id, 'content_ids', null );
 		update_post_meta( $importer_id, 'run', null );
 		update_post_meta( $importer_id, 'table_fields', null );
+		$importer_errors = $this->get_errors();
+		if ( $importer_errors && 'success' === $status ) {
+			$status = 'error';
+		}
 		// Update status and error
 		update_post_meta( $importer_id, 'status', $status );
 		update_post_meta( $importer_id, 'last_error', $error );
@@ -276,7 +325,7 @@ abstract class Air_WP_Sync_Abstract_Importer {
 	public function get_table_fields() {
 		$app_id = $this->config()->get( 'app_id' );
 		$data   = $this->get_api_client()->get_tables( $app_id );
-		$table  = Air_WP_Sync_Helper::get_table_by_id($data->tables, $this->config()->get( 'table' ));
+		$table  = Air_WP_Sync_Helper::get_table_by_id( $data->tables, $this->config()->get( 'table' ) );
 
 		$fields = $table && $table->fields ? $table->fields : array();
 
@@ -334,7 +383,7 @@ abstract class Air_WP_Sync_Abstract_Importer {
 		// Airtable omit keys for empty fields, lets add them with an empty string
 		$mapping       = ! empty( $this->config()->get( 'mapping' ) ) ? $this->config()->get( 'mapping' ) : array();
 		$airtable_keys = array_map(
-			function( $mapping_pair ) {
+			function ( $mapping_pair ) {
 				if ( preg_match( '/(.+)\.(.+)/', $mapping_pair['airtable'], $matches ) ) {
 					$airtable_id = $matches[1];
 				} else {
@@ -452,14 +501,20 @@ abstract class Air_WP_Sync_Abstract_Importer {
 	 * Filters the record attachment fields to exclude urls prior to hashing
 	 * Airtable URLs change every two hours, causing update problems
 	 */
-	protected function filter_attachments_urls( $record ){
+	protected function filter_attachments_urls( $record ) {
 		foreach ( $record as $key => &$value ) {
-			if ( is_array( $value ) ) $value = filter_attachments_urls( $value );
+			if ( is_array( $value ) ) {
+				$value = filter_attachments_urls( $value );
+			}
 		}
-		
-		return array_filter( $record, function( $value, $key ){
-			return $key != 'url';
-		}, ARRAY_FILTER_USE_BOTH);
+
+		return array_filter(
+			$record,
+			function ( $value, $key ) {
+				return $key != 'url';
+			},
+			ARRAY_FILTER_USE_BOTH
+		);
 	}
 
 	/**
@@ -468,9 +523,9 @@ abstract class Air_WP_Sync_Abstract_Importer {
 	 * @return array Import field's options
 	 */
 	public function get_import_fields_options() {
-		$options = [
+		$options = array(
 			'enable_link_to_another_record' => 'yes' === $this->config()->get( 'enable_link_to_another_record' ),
-		];
+		);
 
 		return $options;
 	}

@@ -13,7 +13,7 @@ class Air_WP_Sync_Unsupported_Source {
 	public function remove_fields( $fields ) {
 		$fields = array_filter(
 			$fields,
-			function( $field ) {
+			function ( $field ) {
 				return $field->type !== 'button';
 			}
 		);

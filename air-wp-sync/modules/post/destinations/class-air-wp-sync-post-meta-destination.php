@@ -93,7 +93,7 @@ class Air_WP_Sync_Post_Meta_Destination extends Air_WP_Sync_Abstract_Destination
 			),
 			array(
 				'value'             => 'custom_field',
-				'label'             => __( 'Custom Field... (Pro version)', 'air-wp-sync' ),
+				'label'             => __( 'Custom Field... (Pro+ version)', 'air-wp-sync' ),
 				'enabled'           => false,
 				'allow_multiple'    => true,
 				'supported_sources' => array(

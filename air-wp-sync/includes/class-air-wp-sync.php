@@ -39,15 +39,15 @@ class Air_WP_Sync {
 
 		// Admin
 		if ( is_admin() ) {
-			new Air_WP_Sync_Admin( );
+			new Air_WP_Sync_Admin();
 		}
 
 		// Initalize WP_CLI only in cli mode
 		if ( class_exists( 'WP_CLI' ) ) {
-			WP_CLI::add_command( 'air-wp-sync', new Air_WP_Sync_CLI( ) );
+			WP_CLI::add_command( 'air-wp-sync', new Air_WP_Sync_CLI() );
 		}
 
-		new Air_WP_Sync_Action_Consumer( );
+		new Air_WP_Sync_Action_Consumer();
 
 		// Init Sources
 		new Air_WP_Sync_Barcode_Source();
@@ -67,16 +67,16 @@ class Air_WP_Sync {
 	 * @param string $plugin The plugin being activated.
 	 */
 	public function deactivate_other_instances( $plugin ) {
-		if ( ! in_array( $plugin, array( 'air-wp-sync/air-wp-sync.php', 'air-wp-sync-pro/air-wp-sync.php', 'air-wp-sync-pro-plus/air-wp-sync.php' ), true ) ) {
+		if ( ! in_array( $plugin, array( 'air-wp-sync/air-wp-sync.php', 'air-wp-sync-pro/air-wp-sync.php', 'air-wp-sync-pro-plus/air-wp-sync.php', 'air-wp-sync-for-woocommerce/air-wp-sync.php' ), true ) ) {
 			return;
 		}
 
-		$plugin_to_deactivate  = ['air-wp-sync/air-wp-sync.php'];
+		$plugin_to_deactivate  = array( 'air-wp-sync/air-wp-sync.php' );
 		$deactivated_notice_id = '1';
 
-		// If we just activated the free version, deactivate the pro version.
-		if ( in_array($plugin, $plugin_to_deactivate, true ) ) {
-			$plugin_to_deactivate  = ['air-wp-sync-pro/air-wp-sync.php', 'air-wp-sync-pro-plus/air-wp-sync.php'];
+		// If we just activated the free version, deactivate all other versions.
+		if ( in_array( $plugin, $plugin_to_deactivate, true ) ) {
+			$plugin_to_deactivate  = array( 'air-wp-sync-pro/air-wp-sync.php', 'air-wp-sync-pro-plus/air-wp-sync.php', 'air-wp-sync-for-woocommerce/air-wp-sync.php' );
 			$deactivated_notice_id = '2';
 		}
 
@@ -88,7 +88,7 @@ class Air_WP_Sync {
 		}
 
 		foreach ( $active_plugins as $plugin_basename ) {
-			if ( in_array($plugin_basename, $plugin_to_deactivate, true ) ) {
+			if ( in_array( $plugin_basename, $plugin_to_deactivate, true ) ) {
 				set_transient( 'airwpsync_deactivated_notice_id', $deactivated_notice_id, 1 * HOUR_IN_SECONDS );
 				deactivate_plugins( $plugin_basename );
 				return;
@@ -97,7 +97,7 @@ class Air_WP_Sync {
 	}
 
 	/**
-	 * Displays a notice when either ACF or ACF PRO is automatically deactivated.
+	 * Displays a notice when either AirWPSync plugin is automatically deactivated.
 	 */
 	public function plugin_deactivated_notice() {
 		$deactivated_notice_id = (int) get_transient( 'airwpsync_deactivated_notice_id' );
@@ -105,9 +105,9 @@ class Air_WP_Sync {
 			return;
 		}
 
-		$message = __( "Air WP Sync and Air WP Sync Pro should not be active at the same time. We've automatically deactivated Air WP Sync.", 'air-wp-sync' );
+		$message = __( "Multiple Air WP Sync plugins should not be active at the same time. We've automatically deactivated Air WP Sync.", 'air-wp-sync' );
 		if ( 2 === $deactivated_notice_id ) {
-			$message = __( "Air WP Sync and Air WP Sync Pro should not be active at the same time. We've automatically deactivated Air WP Sync Pro.", 'air-wp-sync' );
+			$message = __( "Multiple Air WP Sync plugins should not be active at the same time. We've automatically deactivated all other Air WP Sync plugins.", 'air-wp-sync' );
 		}
 
 		?>
@@ -160,10 +160,12 @@ class Air_WP_Sync {
 	 * Plugin Setup
 	 */
 	protected function setup() {
+		$capability = apply_filters( 'airwpsync/manage_options_capability', 'manage_options' );
+
 		register_post_type(
 			'airwpsync-connection',
 			array(
-				'labels'          => array(
+				'labels'       => array(
 					'name'               => __( 'Connections', 'air-wp-sync' ),
 					'singular_name'      => __( 'Connection', 'air-wp-sync' ),
 					'add_new'            => __( 'Add New', 'air-wp-sync' ),
@@ -175,14 +177,24 @@ class Air_WP_Sync {
 					'not_found'          => __( 'No Connections found', 'air-wp-sync' ),
 					'not_found_in_trash' => __( 'No Connections found in Trash', 'air-wp-sync' ),
 				),
-				'public'          => false,
-				'show_ui'         => true,
-				'show_in_menu'    => false,
-				'_builtin'        => false,
-				'capability_type' => 'post',
-				'supports'        => array( 'title' ),
-				'rewrite'         => false,
-				'query_var'       => false,
+				'public'       => false,
+				'show_ui'      => true,
+				'show_in_menu' => false,
+				'_builtin'     => false,
+				'capabilities' => array(
+					'edit_post'          => $capability,
+					'read_post'          => $capability,
+					'delete_post'        => $capability,
+					'delete_posts'       => $capability,
+					'edit_posts'         => $capability,
+					'edit_others_posts'  => $capability,
+					'publish_posts'      => $capability,
+					'read_private_posts' => $capability,
+					'create_posts'       => $capability,
+				),
+				'supports'     => array( 'title' ),
+				'rewrite'      => false,
+				'query_var'    => false,
 			)
 		);
 	}
@@ -191,7 +203,7 @@ class Air_WP_Sync {
 	 * Load available importers
 	 */
 	protected function load_importers() {
-        $post_statuses = is_admin() ? array( 'publish', 'draft' ) : array( 'publish' );
+		$post_statuses  = is_admin() ? array( 'publish', 'draft' ) : array( 'publish' );
 		$importer_posts = get_posts(
 			array(
 				'post_type'      => 'airwpsync-connection',
@@ -208,5 +220,4 @@ class Air_WP_Sync {
 			}
 		}
 	}
-
 }
