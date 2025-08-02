@@ -103,10 +103,11 @@ Once you have defined the synchronization frequency and published your connectio
 
 == Screenshots ==
 
-1. All Connections  
-2. Airtable and Import Settings  
-3. Field Mapping  
-4. Sync Settings  
+1. All Connections
+2. Airtable Settings
+3. Import Settings
+4. Field Mapping
+5. Sync Settings
 
 == Changelog ==
 
