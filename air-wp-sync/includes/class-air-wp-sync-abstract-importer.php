@@ -146,7 +146,7 @@ abstract class Air_WP_Sync_Abstract_Importer {
 		if ( ! is_dir( AIR_WP_SYNC_LOGDIR ) ) {
 			wp_mkdir_p( AIR_WP_SYNC_LOGDIR );
 		}
-		$file = fopen( AIR_WP_SYNC_LOGDIR . '/' . $this->infos()->get( 'slug' ) . '-' . gmdate( 'Y-m-d' ) . '-' . $this->get_run_id() . '.log', 'a' );
+		$file = fopen( AIR_WP_SYNC_LOGDIR . '/' . sanitize_file_name( (string) $this->infos()->get( 'slug' ) ) . '-' . gmdate( 'Y-m-d' ) . '-' . $this->get_run_id() . '.log', 'a' );
 		if ( ! is_string( $message ) ) {
 			$message = var_export( $message, true );
 		}
@@ -157,6 +157,47 @@ abstract class Air_WP_Sync_Abstract_Importer {
 			$method = method_exists( 'WP_CLI', $level ) ? $level : 'log';
 			WP_CLI::$method( $message );
 		}
+	}
+
+	/**
+	 * Returns the log files in ante-chronological order filter by a prefix if defined.
+	 *
+	 * @param string|false $prefix The prefix to filter the files to return.
+	 *
+	 * @return string[]
+	 */
+	public function get_log_files( $prefix = false ) {
+		$files = glob( trailingslashit( AIR_WP_SYNC_LOGDIR ) . '*.log' );
+		$files = array_combine( $files, array_map( 'filemtime', $files ) );
+		arsort( $files );
+		$files = array_keys( $files );
+		if ( false !== $prefix ) {
+			$prefix = sanitize_file_name( (string) $prefix );
+			$files  = array_filter(
+				$files,
+				function ( $file ) use ( $prefix ) {
+					return strpos( $file, trailingslashit( AIR_WP_SYNC_LOGDIR ) . $prefix ) === 0;
+				}
+			);
+			$files  = array_values( $files );
+		}
+		return $files;
+	}
+
+
+	/**
+	 * Returns the latest log file URL if any.
+	 *
+	 * @return string|false
+	 */
+	public function get_latest_log_file_url() {
+		$log_files = $this->get_log_files( sanitize_file_name( (string) $this->infos()->get( 'slug' ) ) );
+		if ( count( $log_files ) === 0 ) {
+			return false;
+		}
+		$latest_log_file = array_shift( $log_files );
+
+		return str_replace( trailingslashit( ABSPATH ), trailingslashit( get_site_url() ), $latest_log_file );
 	}
 
 	/**
@@ -277,8 +318,14 @@ abstract class Air_WP_Sync_Abstract_Importer {
 	 */
 	public function end_run( $status = 'success', $error = null ) {
 		global $wpdb;
-		$importer_id = $this->infos()->get( 'id' );
-		$run_id      = $this->get_run_id();
+		$importer_id       = $this->infos()->get( 'id' );
+		$run_id            = $this->get_run_id();
+		$content_ids       = get_post_meta( $importer_id, 'content_ids', true );
+		$count_processed   = is_array( $content_ids ) ? count( $content_ids ) : 0;
+		$start_date_string = get_option( sprintf( 'airwpsync-%s-run-%s-start-date', $importer_id, $run_id ) );
+		$end_date_string   = gmdate( 'Y-m-d H:i:s' );
+		$latest_log_url    = $this->get_latest_log_file_url();
+
 		// Delete any remaining AS actions
 		$action_ids = \ActionScheduler::store()->query_actions(
 			array(
@@ -310,12 +357,20 @@ abstract class Air_WP_Sync_Abstract_Importer {
 		if ( $importer_errors && 'success' === $status ) {
 			$status = 'error';
 		}
-		// Update status and error
+		// Update status and error.
 		update_post_meta( $importer_id, 'status', $status );
 		update_post_meta( $importer_id, 'last_error', $error );
-		// Save date if success
+		update_post_meta( $importer_id, 'latest_log_url', $latest_log_url );
+
+		// Save date if success.
 		if ( 'success' === $status ) {
 			update_post_meta( $importer_id, 'last_updated', gmdate( 'Y-m-d H:i:s' ) );
+			update_post_meta( $importer_id, 'count_processed', $count_processed );
+			if ( $start_date_string ) {
+				$start_datetime = DateTime::createFromFormat( 'Y-m-d H:i:s', $start_date_string );
+				$sync_time      = date_diff( new DateTime( 'now' ), $start_datetime, true );
+				update_post_meta( $importer_id, 'last_sync_time', $sync_time->format( '%s' ) );
+			}
 		}
 	}
 

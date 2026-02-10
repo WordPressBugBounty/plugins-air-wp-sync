@@ -1,6 +1,16 @@
 == Changelog ==
 === Air WP Sync - Airtable to WordPress ===
 
+= 2.8.0 =
+*Release Date: 10th Feb 2026*
+
+* Compatibility with WordPress 6.9
+* Fix: Fixed missing security checks.
+* Fix: Fixed special characters handling in log filenames.
+* Improvement: Added support for created_time field.
+* Improvement: Moved to TranslationsPress for translations.
+* Improvement: Added number of post processed on sync status metabox.
+
 = 2.7.0 =
 *Release Date: 24th June 2025*
 

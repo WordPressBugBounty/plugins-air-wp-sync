@@ -64,13 +64,13 @@ class Air_WP_Sync_Admin_Connection {
 		if ( is_object( $screen ) && 'airwpsync-connection' === $screen->id ) {
 			wp_enqueue_script( 'air-wp-sync-alpine', plugins_url( 'assets/js/alpinejs@3.10.2.min.js', AIR_WP_SYNC_PLUGIN_FILE ), false, AIR_WP_SYNC_VERSION, false );
 			wp_enqueue_script( 'air-wp-sync-admin-filters', plugins_url( 'assets/js/filters/main.js', AIR_WP_SYNC_PLUGIN_FILE ), array( 'wp-i18n' ), AIR_WP_SYNC_VERSION, false );
-			wp_set_script_translations( 'air-wp-sync-admin-filters', 'air-wp-sync', AIR_WP_SYNC_PLUGIN_DIR . 'languages/' );
+			wp_set_script_translations( 'air-wp-sync-admin-filters', 'air-wp-sync' );
 			wp_enqueue_script( 'air-wp-sync-admin', plugins_url( 'assets/js/admin-page.js', AIR_WP_SYNC_PLUGIN_FILE ), array( 'air-wp-sync-alpine', 'jquery-ui-tooltip', 'wp-hooks', 'air-wp-sync-admin-filters', 'wp-i18n' ), AIR_WP_SYNC_VERSION, false );
 			wp_add_inline_script( 'air-wp-sync-admin', 'var airwpsyncImporterData = ' . $this->get_config(), 'before' );
 			wp_add_inline_script( 'air-wp-sync-admin', 'var airWpSync = ' . $this->get_modules_config(), 'before' );
 			wp_localize_script( 'air-wp-sync-admin', 'airWpSyncL10n', $this->get_l10n_strings() );
 			wp_enqueue_script( 'air-wp-sync-admin-metabox-mapping', plugins_url( 'assets/js/metabox-mapping/main.js', AIR_WP_SYNC_PLUGIN_FILE ), array( 'air-wp-sync-admin', 'wp-i18n' ), AIR_WP_SYNC_VERSION, false );
-			wp_set_script_translations( 'air-wp-sync-admin-metabox-mapping', 'air-wp-sync', AIR_WP_SYNC_PLUGIN_DIR . 'languages/' );
+			wp_set_script_translations( 'air-wp-sync-admin-metabox-mapping', 'air-wp-sync' );
 			wp_enqueue_style( 'air-wp-sync-ui', plugins_url( 'assets/js/air-wp-sync-ui/library/index.css', AIR_WP_SYNC_PLUGIN_FILE ), false, AIR_WP_SYNC_VERSION );
 			// .airwpsync-ui class is required by 'air-wp-sync-ui' style.
 			add_filter(
@@ -251,7 +251,7 @@ class Air_WP_Sync_Admin_Connection {
 			'startingUpdate'   => __( 'In progress...', 'air-wp-sync' ),
 			'canceling'        => __( 'Canceling...', 'air-wp-sync' ),
 			'unsavedChanges'   => __( 'You have unsaved changes.', 'air-wp-sync' ),
-			'requiredField'    => __( 'This fields is required', 'air-wp-sync' ),
+			'requiredField'    => __( 'This field is required', 'air-wp-sync' ),
 			'emptyField'       => __( 'Please select an option in the "Import As" column for all mappings', 'air-wp-sync' ),
 			'emptyCustomField' => __( '"Custom Field" fields can\'t be empty.', 'air-wp-sync' ),
 			'baseNotAvailable' => __( 'The base you have previously selected is not available anymore, please check your Airtable token access', 'air-wp-sync' ),
@@ -285,7 +285,7 @@ class Air_WP_Sync_Admin_Connection {
 				'<div class="%1$s"><p>%2$s</p></div>',
 				esc_attr( 'notice notice-error' ),
 				wp_kses(
-					__( 'Thank you for using the Free Version of our plugin! You already have an active connection. To be able to create as many active connections as you want, <a href="https://wpconnect.co/air-wp-sync-plugin/#pricing-plan" target="_blank">Upgrade to Pro+ Version</a>.', 'air-wp-sync' ),
+					__( 'Thank you for using the Free Version of our plugin! You already have an active connection. To be able to create as many active connections as you want, <a href="https://wpconnect.co/air-wp-sync-plugin/#compare-plans" target="_blank">Upgrade to Pro+ Version</a>.', 'air-wp-sync' ),
 					array(
 						'a' => array(
 							'href'   => array(),

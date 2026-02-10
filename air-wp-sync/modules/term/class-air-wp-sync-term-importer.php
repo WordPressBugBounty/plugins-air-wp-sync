@@ -161,8 +161,13 @@ class Air_WP_Sync_Term_Importer extends Air_WP_Sync_Abstract_Importer {
 			)
 		);
 
+		$count_deleted = 0;
 		foreach ( $terms as $term ) {
-			wp_delete_term( $term->term_id, $term->taxonomy );
+			if ( wp_delete_term( $term->term_id, $term->taxonomy ) ) {
+				++$count_deleted;
+			}
 		}
+		update_post_meta( $this->infos()->get( 'id' ), 'count_deleted', $count_deleted );
+		return $count_deleted;
 	}
 }

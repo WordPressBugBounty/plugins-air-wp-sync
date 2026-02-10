@@ -49,6 +49,7 @@ class Air_WP_Sync_Term_Destination extends Air_WP_Sync_Abstract_Destination {
 		'barcode.type',
 		'barcode.text',
 		'count',
+		'createdTime',
 		'createdBy.id',
 		'createdBy.email',
 		'createdBy.name',

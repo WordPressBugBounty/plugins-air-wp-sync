@@ -12,7 +12,6 @@ class Air_WP_Sync_Metabox_Import_Infos {
 	 * Constructor
 	 */
 	public function __construct() {
-
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
 		add_action( 'wp_ajax_air_wp_sync_trigger_update', array( $this, 'trigger_update' ) );
 		add_action( 'wp_ajax_air_wp_sync_get_progress', array( $this, 'get_progress' ) );
@@ -48,6 +47,7 @@ class Air_WP_Sync_Metabox_Import_Infos {
 	public function trigger_update() {
 		// Nonce check
 		check_ajax_referer( 'air-wp-sync-trigger-update', 'nonce' );
+		Air_WP_Sync_Helper::check_ajax_admin_user_access();
 
 		$importer_id = (int) $_POST['importer'] ?? 0;
 
@@ -86,6 +86,7 @@ class Air_WP_Sync_Metabox_Import_Infos {
 	public function get_progress() {
 		// Nonce check
 		check_ajax_referer( 'air-wp-sync-trigger-update', 'nonce' );
+		Air_WP_Sync_Helper::check_ajax_admin_user_access();
 
 		$importer_id = (int) $_POST['importer'] ?? 0;
 
@@ -163,6 +164,7 @@ class Air_WP_Sync_Metabox_Import_Infos {
 	public function cancel_import() {
 		// Nonce check
 		check_ajax_referer( 'air-wp-sync-trigger-update', 'nonce' );
+		Air_WP_Sync_Helper::check_ajax_admin_user_access();
 
 		$importer_id = (int) $_POST['importer'] ?? 0;
 
@@ -195,9 +197,14 @@ class Air_WP_Sync_Metabox_Import_Infos {
 	 */
 	protected function get_stats_html( $importer_id, $forced_error = null ) {
 		ob_start();
-		$status       = $forced_error ? 'error' : ( $importer_id ? get_post_meta( $importer_id, 'status', true ) : '' );
-		$last_updated = $importer_id ? get_post_meta( $importer_id, 'last_updated', true ) : '';
-		$next_sync    = $importer_id ? wp_next_scheduled( 'air_wp_sync_importer_' . $importer_id ) : '';
+		$status          = $forced_error ? 'error' : ( $importer_id ? get_post_meta( $importer_id, 'status', true ) : '' );
+		$last_updated    = $importer_id ? get_post_meta( $importer_id, 'last_updated', true ) : '';
+		$next_sync       = $importer_id ? wp_next_scheduled( 'air_wp_sync_importer_' . $importer_id ) : '';
+		$content_ids     = get_post_meta( $importer_id, 'content_ids', true );
+		$count_deleted   = get_post_meta( $importer_id, 'count_deleted', true );
+		$count_processed = get_post_meta( $importer_id, 'count_processed', true );
+		$latest_log_url  = get_post_meta( $importer_id, 'latest_log_url', true );
+
 		$last_error   = $forced_error ? $forced_error : ( $importer_id ? get_post_meta( $importer_id, 'last_error', true ) : '' );
 		$errors       = $importer_id ? get_post_meta( $importer_id, 'errors', true ) : array();
 		$status_class = '';

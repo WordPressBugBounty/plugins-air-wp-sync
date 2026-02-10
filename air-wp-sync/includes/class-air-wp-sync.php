@@ -123,7 +123,12 @@ class Air_WP_Sync {
 	 * Load translations
 	 */
 	public function load_textdomain() {
-		load_plugin_textdomain( 'air-wp-sync', false, dirname( AIR_WP_SYNC_BASENAME ) . '/languages' );
+		$t15s_updater = new Air_WP_Sync_Language_Packs(
+			'plugin',
+			'air-wp-sync',
+			'https://packages.translationspress.com/wp-connect/air-wp-sync/packages.json'
+		);
+		$project      = $t15s_updater->add_project();
 	}
 
 	/**

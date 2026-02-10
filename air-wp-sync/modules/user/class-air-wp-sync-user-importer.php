@@ -32,9 +32,15 @@ class Air_WP_Sync_User_Importer extends Air_WP_Sync_Abstract_Importer {
 				),
 			)
 		);
+
+		$count_deleted = 0;
 		foreach ( $users as $user_id ) {
-			wp_delete_user( $user_id );
+			if ( wp_delete_user( $user_id ) ) {
+				++$count_deleted;
+			}
 		}
+		update_post_meta( $this->infos()->get( 'id' ), 'count_deleted', $count_deleted );
+		return $count_deleted;
 	}
 
 	/**

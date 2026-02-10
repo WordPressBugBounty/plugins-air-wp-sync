@@ -173,4 +173,23 @@ class Air_WP_Sync_Helper {
 		);
 		return $arr;
 	}
+
+	/**
+	 * Check user access.
+	 *
+	 * @param string $error_key Error key for the response.
+	 *
+	 * @return void
+	 */
+	public static function check_ajax_admin_user_access( $error_key = 'feedback' ) {
+		if ( ! current_user_can( apply_filters( 'airwpsync/manage_options_capability', 'manage_options' ) ) ) {
+			wp_send_json_error(
+				array(
+					'status'   => 'error',
+					$error_key => array( __( 'Unauthorized', 'air-wp-sync' ) ),
+				),
+				403
+			);
+		}
+	}
 }

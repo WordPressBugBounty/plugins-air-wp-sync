@@ -23,6 +23,7 @@ class Air_WP_Sync_Post_Destination extends Air_WP_Sync_Abstract_Destination {
 		'barcode.type',
 		'barcode.text',
 		'count',
+		'createdTime',
 		'createdBy.id',
 		'createdBy.email',
 		'createdBy.name',
@@ -174,6 +175,7 @@ class Air_WP_Sync_Post_Destination extends Air_WP_Sync_Abstract_Destination {
 				'supported_sources' => array(
 					'date',
 					'dateTime',
+					'createdTime',
 					'lastModifiedTime',
 				),
 			),

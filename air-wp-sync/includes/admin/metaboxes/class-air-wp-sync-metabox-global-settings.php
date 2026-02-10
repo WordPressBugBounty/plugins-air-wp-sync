@@ -60,6 +60,7 @@ class Air_WP_Sync_Metabox_Global_Settings {
 		}
 		// Nonce check
 		check_ajax_referer( 'air-wp-sync-ajax', 'nonce' );
+		Air_WP_Sync_Helper::check_ajax_admin_user_access();
 
 		// Get data
 		$params  = array_merge( $_POST );
@@ -105,6 +106,7 @@ class Air_WP_Sync_Metabox_Global_Settings {
 		}
 		// Nonce check
 		check_ajax_referer( 'air-wp-sync-ajax', 'nonce' );
+		Air_WP_Sync_Helper::check_ajax_admin_user_access();
 
 		// Get data
 		$params  = array_merge( $_POST );
@@ -160,6 +162,7 @@ class Air_WP_Sync_Metabox_Global_Settings {
 		}
 		// Nonce check.
 		check_ajax_referer( 'air-wp-sync-ajax', 'nonce' );
+		Air_WP_Sync_Helper::check_ajax_admin_user_access();
 
 		// Get data.
 		$params          = array_merge( $_POST );
@@ -234,6 +237,7 @@ class Air_WP_Sync_Metabox_Global_Settings {
 		}
 		// Nonce check.
 		check_ajax_referer( 'air-wp-sync-ajax', 'nonce' );
+		Air_WP_Sync_Helper::check_ajax_admin_user_access();
 
 		// Get data.
 		$params            = array_merge( $_POST );
@@ -328,6 +332,7 @@ class Air_WP_Sync_Metabox_Global_Settings {
 		}
 		// Nonce check
 		check_ajax_referer( 'air-wp-sync-ajax', 'nonce' );
+		Air_WP_Sync_Helper::check_ajax_admin_user_access();
 
 		// Get data
 		$params         = array_merge( $_POST );

@@ -108,9 +108,15 @@ class Air_WP_Sync_Post_Importer extends Air_WP_Sync_Abstract_Importer {
 				),
 			)
 		);
+
+		$count_deleted = 0;
 		foreach ( $posts as $post_id ) {
-			wp_delete_post( $post_id, true );
+			if ( wp_delete_post( $post_id, true ) ) {
+				++$count_deleted;
+			}
 		}
+		update_post_meta( $this->infos()->get( 'id' ), 'count_deleted', $count_deleted );
+		return $count_deleted;
 	}
 
 	/**

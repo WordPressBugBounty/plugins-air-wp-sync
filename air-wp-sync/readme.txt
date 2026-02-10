@@ -4,15 +4,15 @@ Author URI: https://wpconnect.co/
 Contributors: wpconnectco, thomascharbit, vincentdubroeucq
 Tags: airtable, integration, api, automation, synchronization
 Requires at least: 5.7
-Tested up to: 6.8
-Requires PHP: 7.0
-Stable tag: 2.7.0
+Tested up to: 6.9
+Requires PHP: 7.4
+Stable tag: 2.8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Swiftly sync Airtable to your WordPress website!
 
-== Description == 
+== Description ==
 
 By connecting your Airtable database platform to your WordPress website, this plugin helps you manage your content better. Identify the Airtable fields you wish to link to WordPress and choose the format for your imported contents: articles, pages, products, users, taxonomies, etc. Simply define your ideal update frequency. Your plugin will automatically sync everything swiftly!
 
@@ -56,6 +56,9 @@ Since our latest releases, we’ve expanded Air WP Sync with new functionalities
 * The Events Calendar
 * WooCommerce (products & orders sync) - ([Available in Air WP Sync for WooCommerce](https://wpconnect.co/woocommerce-airtable-integration/))
 
+[youtube https://www.youtube.com/watch?v=iSapJyDzIG8&list=PLVcMc55QQRBN3bduG_CNAw0wn6bQmcXmR]
+
+
 == Installation ==
 
 1. From your WordPress Dashboard, go to "Plugins > Add New".
@@ -91,7 +94,7 @@ See details: [Compare Plans](https://wpconnect.co/air-wp-sync-plugin/#pricing-pl
 
 
 = Do I have to pay to use the plugin and Airtable? =
-We offer three versions of our plugin:
+We offer two versions of our plugin:
 - Free Version: This version is available to all users at no cost [Learn more and get the Free Version here](https://wordpress.org/plugins/air-wp-sync/).
 - Pro+ Version: This version provides extended functionalities, designed for those who need the most from our plugin. [Learn more and get the Pro+ Version here](https://wpconnect.co/air-wp-sync-plugin/#pricing-plan).
 Airtable offers a free plan for an unlimited number of databases and small teams of up to 5 people. You will be able to add up to 1000 entries in each database and store up to 1 GB of attachments, but you will be limited to 1,000 API calls per workspace/per month.
