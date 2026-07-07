@@ -3,9 +3,9 @@
  * Plugin Name: Air WP Sync - Airtable to WordPress
  * Plugin URI: https://wpconnect.co/air-wp-sync-plugin/
  * Description: Swiftly sync Airtable to your WordPress website!
- * Version: 2.8.0
+ * Version: 2.9.0
  * Requires at least: 5.7
- * Tested up to: 6.9
+ * Tested up to: 7.0
  * Requires PHP: 7.4
  * Author: WP connect
  * Author URI: https://wpconnect.co/
@@ -21,7 +21,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'AIR_WP_SYNC_VERSION', '2.8.0' );
+define( 'AIR_WP_SYNC_VERSION', '2.9.0' );
 define( 'AIR_WP_SYNC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AIR_WP_SYNC_PLUGIN_FILE', __FILE__ );
 define( 'AIR_WP_SYNC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -30,6 +30,7 @@ define( 'AIR_WP_SYNC_LOGDIR', wp_upload_dir( null, false )['basedir'] . '/airwps
 
 require_once AIR_WP_SYNC_PLUGIN_DIR . 'vendor/woocommerce/action-scheduler/action-scheduler.php';
 
+require_once AIR_WP_SYNC_PLUGIN_DIR . 'includes/class-air-wp-sync-services.php';
 require_once AIR_WP_SYNC_PLUGIN_DIR . 'includes/class-air-wp-sync-abstract-settings.php';
 require_once AIR_WP_SYNC_PLUGIN_DIR . 'includes/class-air-wp-sync-abstract-module.php';
 require_once AIR_WP_SYNC_PLUGIN_DIR . 'includes/class-air-wp-sync-abstract-importer.php';
@@ -37,8 +38,8 @@ require_once AIR_WP_SYNC_PLUGIN_DIR . 'includes/class-air-wp-sync-abstract-desti
 
 
 require_once AIR_WP_SYNC_PLUGIN_DIR . 'includes/class-air-wp-sync.php';
+require_once AIR_WP_SYNC_PLUGIN_DIR . 'includes/class-air-wp-sync-options.php';
 require_once AIR_WP_SYNC_PLUGIN_DIR . 'includes/class-air-wp-sync-parsedown.php';
-require_once AIR_WP_SYNC_PLUGIN_DIR . 'includes/class-air-wp-sync-language-packs.php';
 
 require_once AIR_WP_SYNC_PLUGIN_DIR . 'includes/class-air-wp-sync-action-consumer.php';
 require_once AIR_WP_SYNC_PLUGIN_DIR . 'includes/class-air-wp-sync-importer-settings.php';

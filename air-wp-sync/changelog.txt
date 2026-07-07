@@ -1,6 +1,14 @@
 == Changelog ==
 === Air WP Sync - Airtable to WordPress ===
 
+= 2.9.0 =
+*Release Date: 7th July 2026*
+
+* Compatibility with WordPress 7.0
+* Improvement: Added settings page for cache duration option.
+* Improvement: Added documentation link in menu.
+* Fix: reverted to translations via translate.wordPress.org 
+
 = 2.8.0 =
 *Release Date: 10th Feb 2026*
 

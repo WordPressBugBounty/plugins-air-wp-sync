@@ -27,6 +27,7 @@ class Air_WP_Sync {
 	 * Init plugin
 	 */
 	public function init() {
+		$this->init_services();
 		$this->load_textdomain();
 		$this->setup();
 
@@ -37,9 +38,11 @@ class Air_WP_Sync {
 
 		$this->load_importers();
 
+		$this->options = new Air_WP_Sync_Options();
+
 		// Admin
 		if ( is_admin() ) {
-			new Air_WP_Sync_Admin();
+			new Air_WP_Sync_Admin( $this->options );
 		}
 
 		// Initalize WP_CLI only in cli mode
@@ -120,15 +123,24 @@ class Air_WP_Sync {
 	}
 
 	/**
+	 * Init services.
+	 * Services are objects that can be shared across the plugin.
+	 * They are stored in a container and can be retrieved using the `get` method.
+	 *
+	 * @return void
+	 * @throws \Exception "{$dependency} not found".
+	 */
+	public function init_services() {
+		$services = Air_WP_Sync_Services::get_instance();
+		$services->set( 'options', new Air_WP_Sync_Options() );
+		do_action( 'airwpsync/init_services', $services );
+	}
+
+	/**
 	 * Load translations
 	 */
 	public function load_textdomain() {
-		$t15s_updater = new Air_WP_Sync_Language_Packs(
-			'plugin',
-			'air-wp-sync',
-			'https://packages.translationspress.com/wp-connect/air-wp-sync/packages.json'
-		);
-		$project      = $t15s_updater->add_project();
+		load_plugin_textdomain( 'air-wp-sync', false, dirname( AIR_WP_SYNC_BASENAME ) . '/languages' );
 	}
 
 	/**

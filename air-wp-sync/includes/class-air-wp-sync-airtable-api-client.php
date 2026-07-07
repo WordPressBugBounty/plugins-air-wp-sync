@@ -14,11 +14,20 @@ class Air_WP_Sync_Airtable_Api_Client {
 	/** @var string Authentication Token */
 	protected $token;
 
+	/** @var int Table cache duration */
+	protected $cache_duration = 15;
+
+	/** @var bool Whether to skip cache */
+	protected $skip_cache = false;
+
 	/**
 	 * Constructor
 	 */
 	public function __construct( $token ) {
-		$this->token = $token;
+		$options              = Air_WP_Sync_Services::get_instance()->get( 'options' );
+		$this->token          = $token;
+		$this->skip_cache     = defined( 'AIR_WP_SYNC_SKIP_API_CACHE' ) && AIR_WP_SYNC_SKIP_API_CACHE;
+		$this->cache_duration = ! empty( $options->get( 'cache_duration' ) ) ? (int) $options->get( 'cache_duration' ) : 15;
 	}
 
 	/**
@@ -34,12 +43,15 @@ class Air_WP_Sync_Airtable_Api_Client {
 	public function get_tables( $base_id, $use_cache = true ) {
 		$tables         = array();
 		$transient_name = sprintf( 'airwpsync_tables_%s', $base_id );
+		if ( $this->skip_cache ) {
+			$use_cache = false;
+		}
 		if ( $use_cache ) {
 			$tables = get_transient( $transient_name );
 		}
 		if ( empty( $tables ) ) {
 			$tables = $this->make_api_request( "/meta/bases/$base_id/tables" );
-			set_transient( $transient_name, $tables, 15 * MINUTE_IN_SECONDS );
+			set_transient( $transient_name, $tables, (int) $this->cache_duration * MINUTE_IN_SECONDS );
 		}
 		return $tables;
 	}

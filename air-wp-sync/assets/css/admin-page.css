@@ -73,11 +73,13 @@
 
 .airwpsync-admin-header-wpco {
   display: block;
+  max-width: 105px;
 }
 
 .airwpsync-admin-header-wpco img {
-  width: auto;
   height: auto;
+  width: auto;
+  max-width: 100%;
 }
 
 .airwpsync-admin-header-link {
@@ -430,6 +432,10 @@ p.description.airwpsync-valid {
 #airwpsync-import-button {
   display: flex;
   align-items: center;
+}
+
+#airwpsync-import-button .dashicons {
+  line-height: 1;
 }
 
 #airwpsync-import-feedback {

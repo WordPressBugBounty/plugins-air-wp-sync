@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '798c117d64d071b3afa3960fd13491b95b697559',
+        'reference' => 'aa8c68a528f8c547131bf2b1d513e231a9953055',
         'name' => '__root__',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '798c117d64d071b3afa3960fd13491b95b697559',
+            'reference' => 'aa8c68a528f8c547131bf2b1d513e231a9953055',
             'dev_requirement' => false,
         ),
         'woocommerce/action-scheduler' => array(
